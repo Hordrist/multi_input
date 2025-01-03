@@ -126,15 +126,17 @@ function MultiInput(parent_div, config) {
         let sugg = new Bloodhound({
             datumTokenizer: tokenizer,
             queryTokenizer: Bloodhound.tokenizers.whitespace,
+            //identify: function (obj) {return obj.id },
             ...tt_config.suggestions
         });
-
+        //Pb actuellement : récupérer le lookup (l'id ici) de la suggestion (piste : event "typeahead:selected") et l'enregistrer, puis le validé si enter et 
+        //le suppr si input
         field.typeahead(tt_config.vanilla_options,
             {
                 name: "suggestions",
                 source: sugg,
-                display: tt_config.display_field,
-                ...tt_config.vanilla_datasets_config
+                display: function (obj) { return obj.id+";"+obj.libelle},
+                ...tt_config.vanilla_datasets_config 
             }
         )
         if (tt_config.match_needed === true) {
