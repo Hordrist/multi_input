@@ -1,0 +1,28 @@
+﻿body
+{
+}
+
+.multi-input{
+    border: 1px solid black;
+    min-height: 18px;
+    min-width: 15%;
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+
+.input-field {
+    border: 1px solid black;
+    border-right: 2px solid black;
+    border-radius: 3px
+}
+
+.input-field:active{
+    border: inherit;
+}
+
+.multi-input .input-item{
+    margin-left: 10px;
+}

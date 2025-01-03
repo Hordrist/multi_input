@@ -1,0 +1,12 @@
+﻿.tt-suggestion {
+    padding: 3px 20px;
+}
+
+.tt-suggestion:hover {
+    cursor: pointer;
+}
+
+.tt-suggestion.tt-cursor {
+    background-color: #0097CF;
+    color: white;
+}

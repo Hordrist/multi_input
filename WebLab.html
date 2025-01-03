@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" href="multi_input/multi_input.css" />
+    <link rel="stylesheet" href="typeahead/typeahead_styling.css" />
+</head>
+<body>
+    <div class="multi-input"></div>
+
+
+    <script src="jquery/jquery-3.6.0.js"></script>
+    <script src="typeahead/typeahead.bundle.js"></script>
+    <script src="typeahead/typeahead_extension.js"></script>
+    <script src="multi_input/multi_input.js"></script>
+    <script>
+        let multiInputConfig = {
+            typeahead: {
+                suggestions: {
+                    local: [{ id: 1, libelle: "Suggestion 1" }, { id: 2, libelle: "Suggestion 2" }, { id: 3, libelle: "Suggestion 3" }]
+                },
+                match_needed: true,
+                display_field: "libelle",
+                vanilla_options: {
+                    hint: true,
+                    highlight: true,
+                    minLength: 0
+                },
+
+            }
+        }
+        MultiInput($(".multi-input"), multiInputConfig)
+        
+    </script>
+</body>
+</html>
