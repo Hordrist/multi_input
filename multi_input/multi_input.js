@@ -45,7 +45,7 @@ function MultiInput(parent_div, config) {
     //Quand on clique entrée pendant la saisie dans le champ multi_input, ça ajoute la valeur de l'input aux items multi_input, et ça vide le champ multi_input
     parent_div.keydown(function eventHandler(event) {
         if (event.code === "Enter") {
-			event.preventDefault();
+            event.preventDefault();
             let original_enter_event = event;
             fieldVal(fieldVal().trim())
             if (fieldVal() && !getItemsText().contains(fieldVal())) {
@@ -65,14 +65,14 @@ function MultiInput(parent_div, config) {
     })
 
 
-    var clearField = function() {
+    var clearField = function () {
         fieldVal("");
     }
 
     /**
      * Permet de créer un item multi_input à partir de la valeur saisie dans le champ multi_input
      */
-    var createItem = function() {
+    var createItem = function () {
         var element = $("<div>");
         var element_text = $("<span>");
         element_text.text(fieldVal());
@@ -144,7 +144,14 @@ function MultiInput(parent_div, config) {
             {
                 name: "suggestions",
                 source: sugg,
-                display: function (obj) { return obj[tt_config.display_field] },
+                display: function (obj) {
+                    if (tt_config.display_field != undefined) {
+                        return obj[tt_config.display_field]
+                    }
+                    else {
+                        return obj
+                    }
+                },
                 ...tt_config.vanilla_datasets_config
             }
         )
@@ -162,11 +169,11 @@ function MultiInput(parent_div, config) {
                 else if (search_results[0] == undefined) {
                     search_results = search_results[1]
                 }
-                else{
+                else {
                     search_results = [...search_results[0], ...search_results[1]]
                 }
                 search_results.forEach((result) => {
-                    if (result[tt_config.display_field] == fieldVal()) {
+                    if (result[tt_config.display_field]??result == fieldVal()) {
                         valid = true;
                     }
                 })
@@ -184,7 +191,7 @@ function MultiInput(parent_div, config) {
             }
         });
 
-        
+
         if (tt_config.lookup_field) {
             field.on("typeahead:selected", function (event, item) {
                 field.attr("lookup", item[tt_config.lookup_field]);
