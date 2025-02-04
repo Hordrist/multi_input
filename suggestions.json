@@ -1,1 +1,18 @@
-[{ id: 1, libelle: "Suggestion 1" }, { id: 2, libelle: "Suggestion 2" }, { id: 3, libelle: "Suggestion 3" }]
+[
+  {
+    "id": 1,
+    "libelle": "Suggestion 1"
+  },
+  {
+    "id": 2,
+    "libelle": "Suggestion 2"
+  },
+  {
+    "id": 3,
+    "libelle": "Suggestion 3"
+  },
+  {
+    "id": 4,
+    "libelle": "Suggestion 4"
+  }
+]

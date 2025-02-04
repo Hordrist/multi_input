@@ -45,6 +45,7 @@ function MultiInput(parent_div, config) {
     //Quand on clique entrée pendant la saisie dans le champ multi_input, ça ajoute la valeur de l'input aux items multi_input, et ça vide le champ multi_input
     parent_div.keydown(function eventHandler(event) {
         if (event.code === "Enter") {
+			event.preventDefault();
             let original_enter_event = event;
             fieldVal(fieldVal().trim())
             if (fieldVal() && !getItemsText().contains(fieldVal())) {
@@ -139,8 +140,6 @@ function MultiInput(parent_div, config) {
             //identify: function (obj) {return obj.id },
             ...tt_config.suggestions
         });
-        //Pb actuellement : récupérer le lookup (l'id ici) de la suggestion (piste : event "typeahead:selected") et l'enregistrer, puis le valider si enter et 
-        //le suppr si input
         field.typeahead(tt_config.vanilla_options,
             {
                 name: "suggestions",
@@ -153,7 +152,8 @@ function MultiInput(parent_div, config) {
             if (tt_config.match_needed === true) {
                 let valid = false
                 let search_results = [];
-                sugg.search(fieldVal(), (datums) => { search_results.push(datums) }, (datums) => { search_results.push(datums) })
+                //NB : On ne peut pas utiliser la vérification si la liste de suggestion est récupérée en remote (ni prefetch ni local)
+                sugg.search(fieldVal(), (datums) => { search_results[0] = datums }, (datums) => { search_results[1] = datums })
 
                 //On teste si les données sync et async ont été récupérées et on modifie search_sesults en fonction
                 if (search_results[1] == undefined) {

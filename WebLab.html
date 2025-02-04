@@ -18,13 +18,16 @@
         let multiInputConfig = {
             typeahead: {
                 suggestions: {
-                    local: [{ id: 1, libelle: "Suggestion 1" }, { id: 2, libelle: "Suggestion 2" }, { id: 3, libelle: "Suggestion 3" }]
+                    //local: [{ id: 1, libelle: "Suggestion 1" }, { id: 2, libelle: "Suggestion 2" }, { id: 3, libelle: "Suggestion 3" }]
                     /*prefetch: {
                         url: "./suggestions.json",
                         cache: false
                     }*/
+                    remote: { //Option non adaptée et déconseillée. Aussi, si la liste de suggestion est récupérée de cette manière, alors match_needed n'est pas utilisable
+                        url: "./suggestions.json",
+                    }
                 },
-                match_needed: true,
+                match_needed: false, //Pas utilisable si la liste de suggestions est récupérée en remote (ni local, ni prefetch)
                 display_field: "libelle",
                 lookup_field: "id",
                 vanilla_options: {
