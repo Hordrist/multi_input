@@ -33,39 +33,48 @@ Elles sont représentées dans le dom par des objets <div>. Un objet multi_input p
  * @param {any} config La config pour l'objet multi_input
  */
 function MultiInput(parent_div, config) {
-    
+
     /** Template d'un objet input_field */
     var field_template = "<input class='input-field'/>";
-
 
     parent_div = $(parent_div); //Assurer queparent_div est un objet jquery, et pas un simple objet html
     var field = $(field_template) //Crée un multi_input field à partir d'une template
     parent_div.append(field) //Ajoute le multi_input_field créé à la div multi_input parente
 
+
     //Quand on clique entrée pendant la saisie dans le champ multi_input, ça ajoute la valeur de l'input aux items multi_input, et ça vide le champ multi_input
     parent_div.keydown(function eventHandler(event) {
         if (event.code === "Enter") {
-            field.typeahead('val', field.typeahead('val').trim())
-            if (field.typeahead('val') && !getItemsText().contains(field.typeahead('val'))) {
-                parent_div.trigger("validatingFieldValue")
-                
+            let original_enter_event = event;
+            fieldVal(fieldVal().trim())
+            if (fieldVal() && !getItemsText().contains(fieldVal())) {
+                parent_div.trigger("validatingFieldValue", [original_enter_event]) //On passe event pour pouvoir lui affecter stopImmediatePropagation
+                if (!original_enter_event.isPropagationStopped()) {
+                    parent_div.trigger("transformingFieldValueToItem");
+                }
             }
         }
     }).on("transformingFieldValueToItem", function (event) {
         event.preventDefault();
-        createItem(field.val());
-        field.typeahead('val', ""); // Même chose que field.val(""), mais ça met aussi à jour l'état interne de typeahead
+        createItem(); //On récupère la valeur du field
+        clearField();
         parent_div.trigger("transformedFieldValueToItem")
-        console.log(getItemsText())
+    }).on("fieldValueInvalidated", function (event, original_enter_event) {
+        original_enter_event.stopPropagation()
     })
+
+
+    var clearField = function() {
+        fieldVal("");
+    }
+
     /**
      * Permet de créer un item multi_input à partir de la valeur saisie dans le champ multi_input
-     * @param {any} text
      */
-    function createItem(text) {
+    var createItem = function() {
         var element = $("<div>");
         var element_text = $("<span>");
-        element_text.text(text);
+        element_text.text(fieldVal());
         element_text.addClass("input-item-text")
         var element_delbutton = $("<button>");
         element_delbutton.text("X");
@@ -76,6 +85,7 @@ function MultiInput(parent_div, config) {
 
         element.addClass("input-item");
         parent_div.append(element)
+        return element;
     }
 
     /**
@@ -129,36 +139,69 @@ function MultiInput(parent_div, config) {
             //identify: function (obj) {return obj.id },
             ...tt_config.suggestions
         });
-        //Pb actuellement : récupérer le lookup (l'id ici) de la suggestion (piste : event "typeahead:selected") et l'enregistrer, puis le validé si enter et 
+        //Pb actuellement : récupérer le lookup (l'id ici) de la suggestion (piste : event "typeahead:selected") et l'enregistrer, puis le valider si enter et 
         //le suppr si input
         field.typeahead(tt_config.vanilla_options,
             {
                 name: "suggestions",
                 source: sugg,
-                display: function (obj) { return obj.id+";"+obj.libelle},
-                ...tt_config.vanilla_datasets_config 
+                display: function (obj) { return obj[tt_config.display_field] },
+                ...tt_config.vanilla_datasets_config
             }
         )
-        if (tt_config.match_needed === true) {
-            parent_div.on("validatingFieldValue", function () {
+        parent_div.on("validatingFieldValue", function (event, original_enter_event) {
+            if (tt_config.match_needed === true) {
                 let valid = false
                 let search_results = [];
-                sugg.search(field.val(), (datums) => { search_results.push(datums) }, (datums) => { search_results.push(datums) })
+                sugg.search(fieldVal(), (datums) => { search_results.push(datums) }, (datums) => { search_results.push(datums) })
+
+                //On teste si les données sync et async ont été récupérées et on modifie search_sesults en fonction
+                if (search_results[1] == undefined) {
+                    search_results = search_results[0]
+                }
+                else if (search_results[0] == undefined) {
+                    search_results = search_results[1]
+                }
+                else{
+                    search_results = [...search_results[0], ...search_results[1]]
+                }
                 search_results.forEach((result) => {
-                    if (result == field.val()) {
+                    if (result[tt_config.display_field] == fieldVal()) {
                         valid = true;
                     }
                 })
                 if (!valid) {
                     alert("Pour être valide, la valeur du champ doit être proposée dans les suggestions");
-                    field.trigger("fieldValueInvalidated")
+                    parent_div.trigger("fieldValueInvalidated", [original_enter_event])
                 }
                 else {
                     parent_div.trigger("fieldValueValidated")
-                    parent_div.trigger("transformingFieldValueToItem")
                 }
 
-            });
+            }
+            else {
+                parent_div.trigger("fieldValueValidated");
+            }
+        });
+
+        
+        if (tt_config.lookup_field) {
+            field.on("typeahead:selected", function (event, item) {
+                field.attr("lookup", item[tt_config.lookup_field]);
+            })
+
+
+            let org_createItem = createItem;
+            createItem = function () {
+                let element = org_createItem();
+                element.attr("lookup", field.attr("lookup"));
+            }
+
+            let org_clearField = clearField;
+            clearField = function () {
+                org_clearField()
+                field.attr("lookup", "")
+            }
         }
     }
 
@@ -166,13 +209,34 @@ function MultiInput(parent_div, config) {
         setTypeahead(config.typeahead)
     }
 
-
-}
-
-Array.prototype.contains = function (value) {
-    for (let i = 0; i < this.length; i++) {
-        if (this[i] === value)
-            return true;
+    /**
+     * 
+     * @param {String} content
+     */
+    function fieldVal(content) {
+        if (content == null) {
+            if (config?.typeahead) {
+                return field.typeahead('val')
+            }
+            else {
+                return field.val();
+            }
+        }
+        else {
+            if (config?.typeahead) {
+                field.typeahead('val', content)
+            }
+            else {
+                return field.val(content);
+            }
+        }
     }
-    return false;
+
+    Array.prototype.contains = function (value) {
+        for (let i = 0; i < this.length; i++) {
+            if (this[i] === value)
+                return true;
+        }
+        return false;
+    }
 }

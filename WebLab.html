@@ -10,7 +10,6 @@
 <body>
     <div class="multi-input"></div>
 
-
     <script src="jquery/jquery-3.6.0.js"></script>
     <script src="typeahead/typeahead.bundle.js"></script>
     <script src="typeahead/typeahead_extension.js"></script>
@@ -20,9 +19,14 @@
             typeahead: {
                 suggestions: {
                     local: [{ id: 1, libelle: "Suggestion 1" }, { id: 2, libelle: "Suggestion 2" }, { id: 3, libelle: "Suggestion 3" }]
+                    /*prefetch: {
+                        url: "./suggestions.json",
+                        cache: false
+                    }*/
                 },
                 match_needed: true,
                 display_field: "libelle",
+                lookup_field: "id",
                 vanilla_options: {
                     hint: true,
                     highlight: true,
