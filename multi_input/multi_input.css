@@ -4,14 +4,12 @@
 
 .multi-input{
     border: 1px solid black;
-    min-height: 18px;
-    min-width: 15%;
-    position: absolute;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    display: inline-block;
 }
 
+.multi-input > *{
+    display:inline-block;
+}
 
 .input-field {
     border: 1px solid black;
