@@ -41,9 +41,11 @@ function MultiInput(parent_div, config) {
 
 
     //Quand on clique entrée pendant la saisie dans le champ multi_input, ça ajoute la valeur de l'input aux items multi_input, et ça vide le champ multi_input
-    $(parent_div).keydown(function eventHandler(event) {
+    $(parent_div).on("keydown", function eventHandler(event) {
         if (event.code === "Enter") {
-            event.preventDefault();
+            if (fieldVal()) {
+                event.preventDefault();
+            }
             let original_enter_event = event;
             fieldVal(fieldVal().trim())
             if (fieldVal() && !getItemsText().contains(fieldVal())) {
@@ -77,7 +79,7 @@ function MultiInput(parent_div, config) {
         var element_text = $("<span>");
         element_text.text(fieldVal());
         element_text.addClass("input-item-text")
-        var element_delbutton = $("<button>");
+        var element_delbutton = $("<button type=\"button\">");
         element_delbutton.text("X");
         element_delbutton.click(deleteItem);
         element_delbutton.addClass("input-item-del")
