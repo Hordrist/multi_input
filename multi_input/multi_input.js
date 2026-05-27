@@ -1,27 +1,27 @@
 /**
  * Terminologie : 
-    * objet multi_input : une implémentation de la librairie. Il représente toute la logique de la librairie ainsi que sa représentation dans le DOM. Il est instantié
-   via la fonction MultiInput, à laquelle on passe une div parente pour la représentation DOM de cet objet, ainsi qu'une variable config pour la configuration de cet objet.
+    * objet multi_input : une implÃ©mentation de la librairie. Il reprÃ©sente toute la logique de la librairie ainsi que sa reprÃ©sentation dans le DOM. Il est instantiÃ©
+   via la fonction MultiInput, Ã  laquelle on passe une div parente pour la reprÃ©sentation DOM de cet objet, ainsi qu'une variable config pour la configuration de cet objet.
     
-    * config : la configuration de la logique d'un l'objet multi_input, permettant par exemple d'activer ou non des fonctionnalités comme le typeahead.
+    * config : la configuration de la logique d'un l'objet multi_input, permettant par exemple d'activer ou non des fonctionnalitÃ©s comme le typeahead.
     
     * div parente (multi_input) : l'objet html <div> qui contient le champ et les items d'un objet multi_input. Elle est fournie par le client de la librairie 
-en paramètre lors de la création d'un objet multi_input.
+en paramÃ¨tre lors de la crÃ©ation d'un objet multi_input.
     
-    * champ (multi_input) / (multi_input) field : l'objet html <input> d'un objet multi_input dans lequel on entre une à une les valeurs souhaitées, qui deviendront des 
-items une fois validées. Le champ multi_input est enfant direct de la div parente.
+    * champ (multi_input) / (multi_input) field : l'objet html <input> d'un objet multi_input dans lequel on entre une Ã  une les valeurs souhaitÃ©es, qui deviendront des 
+items une fois validÃ©es. Le champ multi_input est enfant direct de la div parente.
     
-    * item (multi_input) / (multi_input) item : une valeur précédemment entrée dans le champ multi_input qui a été validée (en appuyant sur la touche entrée). 
-Elles sont représentées dans le dom par des objets <div>. Un objet multi_input peut avoir plusieurs items. Les items peuvent être supprimés.
+    * item (multi_input) / (multi_input) item : une valeur prÃ©cÃ©demment entrÃ©e dans le champ multi_input qui a Ã©tÃ© validÃ©e (en appuyant sur la touche entrÃ©e). 
+Elles sont reprÃ©sentÃ©es dans le dom par des objets <div>. Un objet multi_input peut avoir plusieurs items. Les items peuvent Ãªtre supprimÃ©s.
 
- * Représentation : La représentation d'un objet multi_input dans le dom est la suivante (schématiquement):
+ * ReprÃ©sentation : La reprÃ©sentation d'un objet multi_input dans le dom est la suivante (schÃ©matiquement):
         <div parente>
             <input champ>
             <div items>
             <div items>
             <div items>
 
- * Configuration : Les différentes variables de configuration de l'outil :
+ * Configuration : Les diffÃ©rentes variables de configuration de l'outil :
     config:{
         typeahead:{...} //Voir la fonction setTypeahead
     }
@@ -36,11 +36,11 @@ function MultiInput(parent_div, config) {
 
     /** Template d'un objet input_field */
     var field_template = "<input class='input-field'/>";
-    var field = $(field_template) //Crée un multi_input field à partir d'une template
-    $(parent_div).append($(field)) //Ajoute le multi_input_field créé à la div multi_input parente
+    var field = $(field_template) //CrÃ©e un multi_input field Ã  partir d'une template
+    $(parent_div).append($(field)) //Ajoute le multi_input_field crÃ©Ã© Ã  la div multi_input parente
 
 
-    //Quand on clique entrée pendant la saisie dans le champ multi_input, ça ajoute la valeur de l'input aux items multi_input, et ça vide le champ multi_input
+    //Quand on clique entrÃ©e pendant la saisie dans le champ multi_input, Ã§a ajoute la valeur de l'input aux items multi_input, et Ã§a vide le champ multi_input
     $(parent_div).on("keydown", function eventHandler(event) {
         if (event.code === "Enter") {
             if (fieldVal()) {
@@ -57,7 +57,7 @@ function MultiInput(parent_div, config) {
         }
     }).on("transformingFieldValueToItem", function (event) {
         event.preventDefault();
-        createItem(); //On récupère la valeur du field
+        createItem(); //On rÃ©cupÃ¨re la valeur du field
         clearField();
         $(parent_div).trigger("transformedFieldValueToItem")
     }).on("fieldValueInvalidated", function (event, original_enter_event) {
@@ -72,7 +72,7 @@ function MultiInput(parent_div, config) {
     }
 
     /**
-     * Permet de créer un item multi_input à partir de la valeur saisie dans le champ multi_input
+     * Permet de crÃ©er un item multi_input Ã  partir de la valeur saisie dans le champ multi_input
      */
     var createItem = function () {
         var element = $("<div>");
@@ -110,21 +110,21 @@ function MultiInput(parent_div, config) {
         }).toArray()
     }
     /**
-     * Permet d'ajouter des suggestions pendant l'entrée dans le champ multi_input. Utilise une instance bloodhound.
+     * Permet d'ajouter des suggestions pendant l'entrÃ©e dans le champ multi_input. Utilise une instance bloodhound.
      * @param {any} tt_config la configuration du typeahead.
-     * Structure de tt_config : (parenté par "typeahead:{}" dans la config globale)
+     * Structure de tt_config : (parentÃ© par "typeahead:{}" dans la config globale)
         {
             suggestions:{ //Choisir une des options suivantes
-                - local: [...] //Un array de suggestions donné en dur
+                - local: [...] //Un array de suggestions donnÃ© en dur
                 - prefetch : {...} //Voir la documentation bloodHound : https://github.com/twitter/typeahead.js/blob/master/doc/bloodhound.md#prefetch
                 - remote : {...} //Voir la documentation bloodHound : https://github.com/twitter/typeahead.js/blob/master/doc/bloodhound.md#remote
             },
 
-        //Si les suggestions sont des objets, définit le champ à afficher (exemple : display_field : "name" pour des suggestions du type[{name : zorro, age 51},...]).
+        //Si les suggestions sont des objets, dÃ©finit le champ Ã  afficher (exemple : display_field : "name" pour des suggestions du type[{name : zorro, age 51},...]).
         Inutile si les suggestions sont des simples listes de string
             display_field : <string>,
-            match_needed : <boolean> //Si valeur à true : si la valeur dans le champ multi_input n'appartient pas à la liste de suggestions, on ne peut pas la valider 
-            vanilla_options:{...}, //Les options typeahead souhaitées, voir https://github.com/twitter/typeahead.js/blob/master/doc/jquery_typeahead.md#options
+            match_needed : <boolean> //Si valeur Ã  true : si la valeur dans le champ multi_input n'appartient pas Ã  la liste de suggestions, on ne peut pas la valider 
+            vanilla_options:{...}, //Les options typeahead souhaitÃ©es, voir https://github.com/twitter/typeahead.js/blob/master/doc/jquery_typeahead.md#options
             vanilla_datasets_config:{ //Voir https://github.com/twitter/typeahead.js/blob/master/doc/jquery_typeahead.md#datasets pour plus d'informations
                 async : ...,
                 limit : ...,
@@ -135,10 +135,10 @@ function MultiInput(parent_div, config) {
         }
      */
     function setTypeahead(tt_config) {
-        let tokenizer = !(tt_config.display_field || false) ? Bloodhound.tokenizers.whitespace : Bloodhound.tokenizers.obj.whitespace(tt_config.display_field)
+        let tokenizer = !(tt_config.display_field || false) ? Bloodhound.tokenizers.nonword : Bloodhound.tokenizers.obj.nonword(tt_config.display_field)
         let sugg = new Bloodhound({
             datumTokenizer: tokenizer,
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            queryTokenizer: Bloodhound.tokenizers.nonword,
             //identify: function (obj) {return obj.id },
             ...tt_config.suggestions
         });
@@ -161,10 +161,10 @@ function MultiInput(parent_div, config) {
             if (tt_config.match_needed === true) {
                 let valid = false
                 let search_results = [];
-                //NB : On ne peut pas utiliser la vérification si la liste de suggestion est récupérée en remote (ni prefetch ni local)
+                //NB : On ne peut pas utiliser la vÃ©rification si la liste de suggestion est rÃ©cupÃ©rÃ©e en remote (ni prefetch ni local)
                 sugg.search(fieldVal(), (datums) => { search_results[0] = datums }, (datums) => { search_results[1] = datums })
 
-                //On teste si les données sync et async ont été récupérées et on modifie search_sesults en fonction
+                //On teste si les donnÃ©es sync et async ont Ã©tÃ© rÃ©cupÃ©rÃ©es et on modifie search_sesults en fonction
                 if (search_results[1] == undefined) {
                     search_results = search_results[0]
                 }
@@ -180,7 +180,7 @@ function MultiInput(parent_div, config) {
                     }
                 })
                 if (!valid) {
-                    alert("Pour être valide, la valeur du champ doit être proposée dans les suggestions");
+                    alert("Pour Ãªtre valide, la valeur du champ doit Ãªtre proposÃ©e dans les suggestions");
                     $(parent_div).trigger("fieldValueInvalidated", [original_enter_event])
                 }
                 else {
