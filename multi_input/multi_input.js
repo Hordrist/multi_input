@@ -42,7 +42,7 @@ function MultiInput(parent_div, config) {
 
     //Quand on clique entrée pendant la saisie dans le champ multi_input, ça ajoute la valeur de l'input aux items multi_input, et ça vide le champ multi_input
     $(parent_div).on("keydown", function eventHandler(event) {
-        if (event.code === "Enter") {
+        if (event.code === "Enter" || event.code === "NumpadEnter") {
             if (fieldVal()) {
                 event.preventDefault();
             }
